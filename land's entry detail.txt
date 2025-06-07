@@ -1,0 +1,26 @@
+-------------------------Land Details-------------------------------
+Owner's Name                                       : rks
+Property Address                                   : thali
+Area of the Property                               : 45 sq.m 
+Kitta Number                                       : 666
+Does the land have access to an electricity line?  : y
+Does the land have access to a water pipeline?     : n
+Does the land have access to a sewage pipeline?    : y
+land category                                      : C
+landmark                                           : pipal
+Road access                                        : proposed
+selling price                                      : 10000000
+--------------------------------------------------------------------
+-------------------------Land Details-------------------------------
+Owner's Name                                       : simu
+Property Address                                   : tt
+Area of the Property                               : 687.62 sq.m 
+Kitta Number                                       : 2345
+Does the land have access to an electricity line?  : n
+Does the land have access to a water pipeline?     : y
+Does the land have access to a sewage pipeline?    : y
+land category                                      : B
+landmark                                           : ipal
+Road access                                        : urban road
+selling price                                      : 5000000
+--------------------------------------------------------------------
