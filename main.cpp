@@ -4,21 +4,19 @@
 #include<string>
 #include <windows.h>
 #include<sstream>
+#include<vector>
 
 using namespace std;
 
 //Class defination
-class house
-{
-private:
-    string owner_name;
-    string location;
+class house {
+protected:
+    string owner_name, location;
     float area;
 
 public:
-    void getdata1()
-    {
-        cin.ignore(); // flush newline
+    void getdata1() {
+        cin.ignore();
         cout << "Enter owner name: ";
         getline(cin, owner_name);
         cout << "Enter house location: ";
@@ -26,107 +24,106 @@ public:
         cout << "Enter house area: ";
         cin >> area;
     }
-        void write_data1(const string &filename)const
-    {
-        ofstream file(filename,ios::app);
-        if(file.is_open())
-        {
-            file<<owner_name<<endl;
-            file<<location<<endl;
-            file<<area<<endl;
-        }
-        else
-        {
-            cerr<<"Error in opening file"<<endl;
-        }
-        file.close();
+
+    void write_data1(ofstream &file) const {
+        file << owner_name << endl;
+        file << location << endl;
+        file << area << endl;
+    }
+
+    void read_data1(ifstream &file) {
+        getline(file, owner_name);
+        getline(file, location);
+        file >> area;
+        file.ignore();
+    }
+
+    string summary1() const {
+        return "Owner: " + owner_name + ", Location: " + location + ", Area: " + to_string(area);
     }
 };
 
-class facility:public house
-{
-private:
-    string model;
-    string drainage;
-    string sewage;
-    string parking;
-    string garden;
+class facility : public house {
+protected:
+    string model, drainage, sewage, parking, garden;
+
 public:
-     void getdata2()
-    {
-        cin.ignore(); // flush newline
+    void getdata2() {
+        cin.ignore();
         cout << "Enter house model: ";
         getline(cin, model);
-        cout << "Is there drainage system? : ";
+        cout << "Is there drainage system? ";
         getline(cin, drainage);
-        cout << "Is there sewage system? : ";
+        cout << "Is there sewage system? ";
         getline(cin, sewage);
-        cout << "Is there parking facility? : ";
+        cout << "Is there parking? ";
         getline(cin, parking);
-        cout << "Is there garden? : ";
+        cout << "Is there garden? ";
         getline(cin, garden);
     }
-        void write_data2(const string &filename)const
-    {
-        ofstream file(filename,ios::app);
-        if(file.is_open())
-        {
-            file<<model<<endl;
-            file<<drainage<<endl;
-            file<<sewage<<endl;
-            file<<parking<<endl;
-            file<<garden<<endl;
-        }
-        else
-        {
-            cerr<<"Error in opening file"<<endl;
-        }
-        file.close();
+
+    void write_data2(ofstream &file) const {
+        file << model << endl << drainage << endl << sewage << endl << parking << endl << garden << endl;
+    }
+
+    void read_data2(ifstream &file) {
+        getline(file, model);
+        getline(file, drainage);
+        getline(file, sewage);
+        getline(file, parking);
+        getline(file, garden);
     }
 };
 
-class house_model:public facility
-{
+class house_model : public facility {
 private:
-    int bedroom;
-    int kitchen;
-    int bathroom;
+    int bedroom, kitchen, bathroom;
     string flooring;
 
 public:
-     void getdata3()
-    {
+    void getdata3() {
         cout << "Enter no. of bedrooms: ";
         cin >> bedroom;
         cout << "Enter no. of kitchens: ";
         cin >> kitchen;
         cout << "Enter no. of bathrooms: ";
         cin >> bathroom;
-        cin.ignore(); // flush newline
-        cout << "What kind of flooring is done? ";
+        cin.ignore();
+        cout << "Flooring type: ";
         getline(cin, flooring);
     }
-    void write_data3(const string &filename)const
-    {
-        ofstream file(filename,ios::app);
-        if(file.is_open())
-        {
-            file<<bedroom<<endl;
-            file<<kitchen<<endl;
-            file<<bathroom<<endl;
-            file<<flooring<<endl;
-        }
-        else
-        {
-            cerr<<"Error in opening file"<<endl;
-        }
-        file.close();
+
+    void write_data3(ofstream &file) const {
+        file << bedroom << endl << kitchen << endl << bathroom << endl << flooring << endl;
     }
-    void write_data(const string &file_name)
-    {
-        write_data1(file_name);
-        write_data2(file_name);
-        write_data3(file_name);
+
+    void read_data3(ifstream &file) {
+        file >> bedroom >> kitchen >> bathroom;
+        file.ignore();
+        getline(file, flooring);
+    }
+
+    void get_all_data() {
+        getdata1();
+        getdata2();
+        getdata3();
+    }
+
+    void write_all_data(ofstream &file) const {
+        write_data1(file);
+        write_data2(file);
+        write_data3(file);
+        file << "===\n"; // delimiter
+    }
+
+    void read_all_data(ifstream &file) {
+        read_data1(file);
+        read_data2(file);
+        read_data3(file);
+    }
+
+    string summary() const {
+        return summary1() + ", Model: " + model + ", Bedrooms: " + to_string(bedroom);
     }
 };
 
@@ -277,7 +274,6 @@ public:
         Sleep(2000);
     }
 
-
     float convertToSquareMeters(float ropani, float aana, float paisa, float dam)
     {
         float area = ropani * 508.74;
@@ -349,6 +345,12 @@ void choice_house();
 void choice_land();
 void house_purchase();
 void house_selling();
+void update_house_record();
+void delete_house_record();
+void list_all_records(vector<house_model> &records);
+vector<house_model> load_records(const string &filename);
+void save_records(const string &filename, const vector<house_model> &records);
+void house_selling_add();
 void land_purchase();
 void land_selling();
 void land_measurement();
@@ -396,10 +398,10 @@ void choice_house() {
 
         switch (n) {
             case 1:
-                // house_purchase();
+                house_purchase();
                 break;
             case 2:
-                house_selling();
+                house_selling_add();
                 break;
             case 3:
                 return; // back to main menu
@@ -410,48 +412,172 @@ void choice_house() {
     }
 }
 
-/*
-void choice_land()
-{
-    system("cls");
-    int n;
-    cout<<"\t\t\tWelcome to Real Estate Business Platform!!";
-    cout<<"\n\n\t\t\t 1.Land Purchase";
-    cout<<"\n\t\t\t 2.Land Selling";
-    cout<<"\n\t\t\t 3.<-Back";
-    cout<<"\n\n\t\t\t Enter a choice: ";
-    cin>>n;
-    switch (n)
-    {
-    case 1:
-        land_purchase();
-        break;
-    case 2:
-        land_selling();
-        break;
-    case 3:
-        main_menu();
-        break;
-    default:
-        cout<<"\n\n\t\t\tInvalid Entry!!";
+
+void house_selling_add() {
+    while (true) {
+        system("cls");
+        int n;
+        cout << "\t\t\tHouse Real Estate Menu";
+        cout << "\n\n\t\t\t 1. House Selling (Add)";
+        cout << "\n\t\t\t 2. Update House Record";
+        cout << "\n\t\t\t 3. Delete House Record";
+        cout << "\n\t\t\t 4. <- Back";
+        cout << "\n\n\t\t\t Enter a choice: ";
+        cin >> n;
+
+        switch (n) {
+            case 1:
+                house_selling();
+                break;
+            case 2:
+                update_house_record();
+                break;
+            case 3:
+                delete_house_record();
+                break;
+            case 4:
+                return;
+            default:
+                cout << "\n\n\t\t\tInvalid Entry!!\n";
+                system("pause");
+        }
     }
-    choice_land();
 }
-*/
 
 void house_selling() {
-    char choice;
-    do {
-        system("cls");
-        house_model h1;
-        h1.getdata1();
-        h1.getdata2();
-        h1.getdata3();
-        h1.write_data("house_record.txt");
-        cout << "Enter another record? (y/n): ";
-        cin >> choice;
-    } while (choice == 'y' || choice == 'Y');
+    system("cls");
+    house_model h;
+    h.get_all_data();
+
+    ofstream file("house_record.txt", ios::app);
+    if (!file) {
+        cerr << "File opening failed.\n";
+        return;
+    }
+
+    h.write_all_data(file);
+    file.close();
+
+    cout << "Record saved successfully.\n";
+    system("pause");
 }
+
+void update_house_record() {
+    system("cls");
+    vector<house_model> records = load_records("house_record.txt");
+
+    if (records.empty()) {
+        cout << "No records found.\n";
+        system("pause");
+        return;
+    }
+
+    list_all_records(records);
+    int index;
+    cout << "Enter record number to update: ";
+    cin >> index;
+
+    if (index < 1 || index > records.size()) {
+        cout << "Invalid index.\n";
+        return;
+    }
+
+    records[index - 1].get_all_data();
+    save_records("house_record.txt", records);
+
+    cout << "Record updated.\n";
+    system("pause");
+}
+
+void delete_house_record() {
+    system("cls");
+    vector<house_model> records = load_records("house_record.txt");
+
+    if (records.empty()) {
+        cout << "No records found.\n";
+        system("pause");
+        return;
+    }
+
+    list_all_records(records);
+    int index;
+    cout << "Enter record number to delete: ";
+    cin >> index;
+
+    if (index < 1 || index > records.size()) {
+        cout << "Invalid index.\n";
+        return;
+    }
+
+    records.erase(records.begin() + index - 1);
+    save_records("house_record.txt", records);
+
+    cout << "Record deleted.\n";
+    system("pause");
+}
+
+void list_all_records(vector<house_model> &records) {
+    int i = 1;
+    for (const auto &r : records) {
+        cout << i++ << ". " << r.summary() << endl;
+    }
+}
+
+vector<house_model> load_records(const string &filename) {
+    vector<house_model> records;
+    ifstream file(filename);
+    if (!file) return records;
+
+    while (file.peek() != EOF) {
+        house_model h;
+        h.read_all_data(file);
+        string delimiter;
+        getline(file, delimiter); // read delimiter ===
+        if (!file.fail()) {
+            records.push_back(h);
+        }
+    }
+
+    return records;
+}
+
+void save_records(const string &filename, const vector<house_model> &records) {
+    ofstream file(filename, ios::trunc);
+    for (const auto &r : records) {
+        r.write_all_data(file);
+    }
+}
+void house_purchase() {
+    system("cls");
+    vector<house_model> records = load_records("house_record.txt");
+
+    if (records.empty()) {
+        cout << "No houses available for purchase.\n";
+        system("pause");
+        return;
+    }
+
+    cout << "\t\tAvailable Houses for Purchase:\n";
+    list_all_records(records);
+
+    int index;
+    cout << "\nEnter the record number of the house to purchase: ";
+    cin >> index;
+
+    if (index < 1 || index > records.size()) {
+        cout << "Invalid index.\n";
+        system("pause");
+        return;
+    }
+
+    cout << "\nYou have purchased:\n" << records[index - 1].summary() << "\n";
+    records.erase(records.begin() + index - 1); // Remove purchased house
+    save_records("house_record.txt", records);
+
+    cout << "\nPurchase successful!\n";
+    system("pause");
+}
+
 
 //Function Defination for Land
 
